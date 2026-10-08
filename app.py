@@ -30,7 +30,98 @@ def _parse_users():
 
 APP_USERS = _parse_users()
 
-st.set_page_config(page_title="Nexo Group", page_icon="📦", layout="wide")
+st.set_page_config(page_title="Nexo Group", page_icon="📦", layout="wide", initial_sidebar_state="collapsed")
+
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
+    background-color: #080808 !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+#MainMenu, footer, header, [data-testid="stToolbar"],
+[data-testid="stDecoration"], [data-testid="stStatusWidget"] {
+    display: none !important;
+}
+
+[data-testid="stSidebar"] { display: none !important; }
+
+/* Inputs */
+input[type="text"], input[type="password"] {
+    background: #161616 !important;
+    border: 1px solid #2a2a2a !important;
+    border-radius: 10px !important;
+    color: #ffffff !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.95rem !important;
+    padding: 12px 16px !important;
+}
+input[type="text"]:focus, input[type="password"]:focus {
+    border-color: #444 !important;
+    box-shadow: none !important;
+}
+.stTextInput label, .stSelectbox label {
+    color: #888 !important;
+    font-size: 0.82rem !important;
+    font-family: 'Inter', sans-serif !important;
+    letter-spacing: 0.03em;
+}
+
+/* Botão primário — branco */
+.stButton > button[kind="primary"], button[kind="primary"] {
+    background: #ffffff !important;
+    color: #111111 !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    height: 46px !important;
+    transition: opacity 0.15s;
+}
+.stButton > button[kind="primary"]:hover { opacity: 0.88 !important; }
+
+/* Botão secundário */
+.stButton > button[kind="secondary"] {
+    background: #1a1a1a !important;
+    color: #ccc !important;
+    border: 1px solid #2a2a2a !important;
+    border-radius: 10px !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+/* Containers / cards */
+[data-testid="stVerticalBlockBorderWrapper"] {
+    background: #111111 !important;
+    border: 1px solid #1f1f1f !important;
+    border-radius: 12px !important;
+}
+
+/* Divider */
+hr { border-color: #1f1f1f !important; }
+
+/* Métricas */
+[data-testid="stMetric"] { color: #fff !important; }
+[data-testid="stMetricValue"] { color: #fff !important; font-family: 'Inter', sans-serif !important; }
+
+/* Caption/texto secundário */
+.stCaption, [data-testid="stCaptionContainer"] { color: #555 !important; }
+
+/* Checkbox */
+.stCheckbox label { color: #ccc !important; font-family: 'Inter', sans-serif !important; }
+
+/* Info/warning/success */
+[data-testid="stAlert"] { border-radius: 10px !important; }
+
+/* Títulos */
+h1, h2, h3 {
+    font-family: 'Inter', sans-serif !important;
+    color: #ffffff !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 
 def get_token():
@@ -52,15 +143,27 @@ def exchange_code(code):
 
 # ── Tela de Login ─────────────────────────────────────────────────────────────
 if not st.session_state.get("logged_in"):
-    col_l, col_c, col_r = st.columns([1, 2, 1])
-    with col_c:
-        st.markdown("<br><br>", unsafe_allow_html=True)
-        st.title("Nexo Group")
-        st.caption("Order Generator · Supplier Document Builder")
-        st.divider()
+    st.markdown("<div style='height: 80px'></div>", unsafe_allow_html=True)
 
-        username = st.text_input("Usuário", placeholder="seu usuário")
-        password = st.text_input("Senha", type="password", placeholder="••••••••")
+    col_l, col_c, col_r = st.columns([1, 1.4, 1])
+    with col_c:
+        st.markdown("""
+        <div style='text-align:center; margin-bottom: 36px;'>
+            <div style='font-size:2.6rem; font-weight:800; color:#ffffff;
+                        letter-spacing:-1.5px; font-family:Inter,sans-serif;'>
+                Nexo Group
+            </div>
+            <div style='font-size:0.68rem; letter-spacing:0.22em; color:#444;
+                        margin-top:6px; text-transform:uppercase;
+                        font-family:Inter,sans-serif;'>
+                Order Generator
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        username = st.text_input("Usuário", placeholder="seu usuário", label_visibility="visible")
+        password = st.text_input("Senha", type="password", placeholder="••••••••", label_visibility="visible")
+        st.markdown("<div style='height:4px'></div>", unsafe_allow_html=True)
 
         if st.button("Entrar", type="primary", use_container_width=True):
             pw_hash = hashlib.sha256(password.encode()).hexdigest()
