@@ -1,3 +1,4 @@
+import hashlib
 import os
 import requests
 import streamlit as st
@@ -15,7 +16,21 @@ SCOPES = "read_orders"
 # URL registrada no app Shopify (application_url da versão ativa)
 SHOPIFY_REDIRECT_URI = "https://example.com"
 
-st.set_page_config(page_title="Order Generator", page_icon="📦", layout="wide")
+# Credenciais de acesso — formato: "usuario:senha,usuario2:senha2"
+APP_USERS_RAW = os.environ.get("APP_USERS", "admin:nexogroup")
+
+def _parse_users():
+    users = {}
+    for entry in APP_USERS_RAW.split(","):
+        parts = entry.strip().split(":", 1)
+        if len(parts) == 2:
+            u, p = parts
+            users[u.strip()] = hashlib.sha256(p.strip().encode()).hexdigest()
+    return users
+
+APP_USERS = _parse_users()
+
+st.set_page_config(page_title="Nexo Group", page_icon="📦", layout="wide")
 
 
 def get_token():
@@ -35,9 +50,39 @@ def exchange_code(code):
     return resp.json().get("access_token", "")
 
 
+# ── Tela de Login ─────────────────────────────────────────────────────────────
+if not st.session_state.get("logged_in"):
+    col_l, col_c, col_r = st.columns([1, 2, 1])
+    with col_c:
+        st.markdown("<br><br>", unsafe_allow_html=True)
+        st.title("Nexo Group")
+        st.caption("Order Generator · Supplier Document Builder")
+        st.divider()
+
+        username = st.text_input("Usuário", placeholder="seu usuário")
+        password = st.text_input("Senha", type="password", placeholder="••••••••")
+
+        if st.button("Entrar", type="primary", use_container_width=True):
+            pw_hash = hashlib.sha256(password.encode()).hexdigest()
+            if username in APP_USERS and APP_USERS[username] == pw_hash:
+                st.session_state["logged_in"] = True
+                st.session_state["username"] = username
+                st.rerun()
+            else:
+                st.error("Usuário ou senha incorretos.")
+    st.stop()
+
 # ── Header ────────────────────────────────────────────────────────────────────
-st.title("Order Generator")
-st.caption("Supplier Document Builder")
+col_title, col_logout = st.columns([6, 1])
+with col_title:
+    st.title("Nexo Group")
+    st.caption(f"Order Generator · Supplier Document Builder · {st.session_state.get('username', '')}")
+with col_logout:
+    st.write("")
+    st.write("")
+    if st.button("Sair", use_container_width=True):
+        st.session_state.clear()
+        st.rerun()
 st.divider()
 
 token = get_token()
