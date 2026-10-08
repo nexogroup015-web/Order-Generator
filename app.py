@@ -34,43 +34,54 @@ st.set_page_config(page_title="Nexo Group", page_icon="📦", layout="wide", ini
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
-    background-color: #080808 !important;
+/* ── Fundo 100% preto em todos os elementos ── */
+html, body,
+.stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"],
+[data-testid="stMainBlockContainer"],
+[data-testid="stVerticalBlock"],
+[data-testid="column"],
+[data-testid="stHorizontalBlock"],
+section[data-testid="stSidebar"],
+.main, .block-container {
+    background-color: #000000 !important;
     font-family: 'Inter', sans-serif !important;
 }
 
-#MainMenu, footer, header, [data-testid="stToolbar"],
-[data-testid="stDecoration"], [data-testid="stStatusWidget"] {
+/* ── Esconder elementos do Streamlit ── */
+#MainMenu, footer, header,
+[data-testid="stToolbar"],
+[data-testid="stDecoration"],
+[data-testid="stStatusWidget"],
+[data-testid="stSidebar"] {
     display: none !important;
 }
 
-[data-testid="stSidebar"] { display: none !important; }
-
-/* Inputs */
+/* ── Inputs ── */
 input[type="text"], input[type="password"] {
-    background: #161616 !important;
-    border: 1px solid #2a2a2a !important;
+    background: #111111 !important;
+    border: 1px solid #222222 !important;
     border-radius: 10px !important;
     color: #ffffff !important;
     font-family: 'Inter', sans-serif !important;
     font-size: 0.95rem !important;
-    padding: 12px 16px !important;
 }
 input[type="text"]:focus, input[type="password"]:focus {
-    border-color: #444 !important;
+    border-color: #383838 !important;
     box-shadow: none !important;
+    outline: none !important;
 }
-.stTextInput label, .stSelectbox label {
-    color: #888 !important;
+.stTextInput label {
+    color: #666 !important;
     font-size: 0.82rem !important;
     font-family: 'Inter', sans-serif !important;
-    letter-spacing: 0.03em;
 }
 
-/* Botão primário — branco */
-.stButton > button[kind="primary"], button[kind="primary"] {
+/* ── Botão primário (branco) ── */
+.stButton > button[kind="primary"] {
     background: #ffffff !important;
     color: #111111 !important;
     border: none !important;
@@ -79,47 +90,58 @@ input[type="text"]:focus, input[type="password"]:focus {
     font-weight: 600 !important;
     font-size: 0.95rem !important;
     height: 46px !important;
-    transition: opacity 0.15s;
 }
-.stButton > button[kind="primary"]:hover { opacity: 0.88 !important; }
+.stButton > button[kind="primary"]:hover {
+    background: #e8e8e8 !important;
+}
 
-/* Botão secundário */
+/* ── Botão secundário ── */
 .stButton > button[kind="secondary"] {
-    background: #1a1a1a !important;
-    color: #ccc !important;
-    border: 1px solid #2a2a2a !important;
+    background: #111111 !important;
+    color: #aaaaaa !important;
+    border: 1px solid #222222 !important;
     border-radius: 10px !important;
     font-family: 'Inter', sans-serif !important;
 }
 
-/* Containers / cards */
+/* ── Containers com borda (order cards) ── */
 [data-testid="stVerticalBlockBorderWrapper"] {
-    background: #111111 !important;
-    border: 1px solid #1f1f1f !important;
+    background: #0d0d0d !important;
+    border: 1px solid #1a1a1a !important;
     border-radius: 12px !important;
 }
 
-/* Divider */
-hr { border-color: #1f1f1f !important; }
+/* ── Divider ── */
+hr { border-color: #1a1a1a !important; }
 
-/* Métricas */
-[data-testid="stMetric"] { color: #fff !important; }
-[data-testid="stMetricValue"] { color: #fff !important; font-family: 'Inter', sans-serif !important; }
+/* ── Métricas ── */
+[data-testid="stMetricValue"] {
+    color: #ffffff !important;
+    font-family: 'Inter', sans-serif !important;
+}
 
-/* Caption/texto secundário */
-.stCaption, [data-testid="stCaptionContainer"] { color: #555 !important; }
-
-/* Checkbox */
-.stCheckbox label { color: #ccc !important; font-family: 'Inter', sans-serif !important; }
-
-/* Info/warning/success */
-[data-testid="stAlert"] { border-radius: 10px !important; }
-
-/* Títulos */
-h1, h2, h3 {
+/* ── Textos ── */
+h1, h2, h3, p, span, label {
     font-family: 'Inter', sans-serif !important;
     color: #ffffff !important;
 }
+.stCaption, [data-testid="stCaptionContainer"] p {
+    color: #444444 !important;
+}
+
+/* ── Checkbox ── */
+.stCheckbox label p { color: #cccccc !important; }
+
+/* ── Selectbox ── */
+[data-testid="stSelectbox"] > div > div {
+    background: #111111 !important;
+    border: 1px solid #222222 !important;
+    border-radius: 10px !important;
+    color: #ffffff !important;
+}
+
+/* ── Alertas ── */
+[data-testid="stAlert"] { border-radius: 10px !important; }
 </style>
 """, unsafe_allow_html=True)
 
