@@ -1,7 +1,7 @@
 import os
 import requests
 import streamlit as st
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse, parse_qs
 
 from shopify_api import fetch_orders
 from doc_generator import generate_document
@@ -10,8 +10,10 @@ SHOPIFY_CLIENT_ID = os.environ.get("SHOPIFY_CLIENT_ID", "")
 SHOPIFY_CLIENT_SECRET = os.environ.get("SHOPIFY_CLIENT_SECRET", "")
 SHOPIFY_STORE = os.environ.get("SHOPIFY_STORE", "")
 SHOPIFY_ACCESS_TOKEN = os.environ.get("SHOPIFY_ACCESS_TOKEN", "")
-APP_URL = os.environ.get("APP_URL", "http://localhost:8501")
 SCOPES = "read_orders"
+
+# URL registrada no app Shopify (application_url da versão ativa)
+SHOPIFY_REDIRECT_URI = "https://example.com"
 
 st.set_page_config(page_title="Order Generator", page_icon="📦", layout="wide")
 
@@ -33,18 +35,6 @@ def exchange_code(code):
     return resp.json().get("access_token", "")
 
 
-# ── OAuth callback ────────────────────────────────────────────────────────────
-qp = st.query_params
-if "code" in qp and not get_token():
-    token = exchange_code(qp["code"])
-    if token:
-        st.session_state["access_token"] = token
-        st.query_params.clear()
-        st.rerun()
-    else:
-        st.error("Erro ao obter token. Tente novamente.")
-        st.stop()
-
 # ── Header ────────────────────────────────────────────────────────────────────
 st.title("Order Generator")
 st.caption("Supplier Document Builder")
@@ -55,18 +45,49 @@ token = get_token()
 # ── Tela de conexão (sem token) ───────────────────────────────────────────────
 if not token:
     st.subheader("Conectar Shopify")
-    st.write("Clique no botão abaixo para autorizar o acesso à sua loja.")
+
     install_url = (
         f"https://{SHOPIFY_STORE}/admin/oauth/authorize?"
         + urlencode(
             {
                 "client_id": SHOPIFY_CLIENT_ID,
                 "scope": SCOPES,
-                "redirect_uri": APP_URL,
+                "redirect_uri": SHOPIFY_REDIRECT_URI,
+                "state": "setup",
             }
         )
     )
-    st.link_button("🔗 Conectar Shopify", install_url, type="primary")
+
+    st.write("**Passo 1 —** Clique no botão abaixo para autorizar o app no Shopify:")
+    st.link_button("🔗 Autorizar no Shopify", install_url, type="primary")
+
+    st.write(
+        "**Passo 2 —** Após autorizar, você será redirecionado para uma página de exemplo. "
+        "Copie a **URL completa** do seu navegador e cole abaixo:"
+    )
+    st.caption("A URL vai começar com `https://example.com/?code=...`")
+
+    pasted_url = st.text_input("Cole a URL aqui:", placeholder="https://example.com/?code=...")
+
+    if pasted_url:
+        if st.button("✅ Conectar", type="primary"):
+            try:
+                parsed = urlparse(pasted_url)
+                params = parse_qs(parsed.query)
+                code = params.get("code", [None])[0]
+                if code:
+                    with st.spinner("Obtendo token..."):
+                        new_token = exchange_code(code)
+                    if new_token:
+                        st.session_state["access_token"] = new_token
+                        st.rerun()
+                    else:
+                        st.error("Erro ao obter token. O código pode ter expirado — tente o Passo 1 novamente.")
+                else:
+                    st.error("Código não encontrado na URL. Verifique se copiou a URL correta.")
+            except Exception as e:
+                st.error(f"Erro: {e}")
+
     st.stop()
 
 # ── Exibe token após OAuth (para salvar no Render) ────────────────────────────
