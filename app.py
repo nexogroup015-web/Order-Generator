@@ -35,19 +35,33 @@ st.markdown("""
 html, body, .stApp { background-color: #000000 !important; }
 * { font-family: 'Inter', sans-serif !important; }
 #MainMenu, footer, header { visibility: hidden; }
+[data-testid="stDecoration"] { display: none !important; }
 
-.stButton > button[kind="primary"] {
+button[data-testid="baseButton-primary"],
+.stButton > button[kind="primary"],
+.stButton > button {
     background: #ffffff !important;
     color: #000000 !important;
     border: none !important;
     font-weight: 600 !important;
     border-radius: 8px !important;
 }
+button[data-testid="baseButton-primary"] p,
+button[data-testid="baseButton-primary"] span,
+.stButton > button p,
+.stButton > button span {
+    color: #000000 !important;
+}
+button[data-testid="baseButton-secondary"],
 .stButton > button[kind="secondary"] {
     background: transparent !important;
     color: #888 !important;
     border: 1px solid #333 !important;
     border-radius: 8px !important;
+}
+button[data-testid="baseButton-secondary"] p,
+button[data-testid="baseButton-secondary"] span {
+    color: #888 !important;
 }
 </style>
 """, unsafe_allow_html=True)
