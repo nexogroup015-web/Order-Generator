@@ -181,36 +181,51 @@ def exchange_code(code):
 
 # ── Tela de Login ─────────────────────────────────────────────────────────────
 if not st.session_state.get("logged_in"):
-    st.markdown("<div style='height: 80px'></div>", unsafe_allow_html=True)
+    # CSS especial para login: sem colunas, bloco centralizado
+    st.markdown("""
+    <style>
+    [data-testid="stMainBlockContainer"] {
+        max-width: 420px !important;
+        margin: 0 auto !important;
+        padding-top: 120px !important;
+        background: #000000 !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    [data-testid="stVerticalBlock"],
+    [data-testid="stVerticalBlock"] > div {
+        border: none !important;
+        box-shadow: none !important;
+        background: #000000 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-    col_l, col_c, col_r = st.columns([1, 1.4, 1])
-    with col_c:
-        st.markdown("""
-        <div style='text-align:center; margin-bottom: 36px;'>
-            <div style='font-size:2.6rem; font-weight:800; color:#ffffff;
-                        letter-spacing:-1.5px; font-family:Inter,sans-serif;'>
-                Nexo Group
-            </div>
-            <div style='font-size:0.68rem; letter-spacing:0.22em; color:#444;
-                        margin-top:6px; text-transform:uppercase;
-                        font-family:Inter,sans-serif;'>
-                Order Generator
-            </div>
+    st.markdown("""
+    <div style='text-align:center; margin-bottom:40px;'>
+        <div style='font-size:2.6rem; font-weight:800; color:#ffffff;
+                    letter-spacing:-1.5px; font-family:Inter,sans-serif;'>
+            Nexo Group
         </div>
-        """, unsafe_allow_html=True)
+        <div style='font-size:0.68rem; letter-spacing:0.22em; color:#444;
+                    margin-top:8px; text-transform:uppercase;
+                    font-family:Inter,sans-serif;'>
+            Order Generator
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-        username = st.text_input("Usuário", placeholder="seu usuário", label_visibility="visible")
-        password = st.text_input("Senha", type="password", placeholder="••••••••", label_visibility="visible")
-        st.markdown("<div style='height:4px'></div>", unsafe_allow_html=True)
+    username = st.text_input("Usuário", placeholder="seu usuário")
+    password = st.text_input("Senha", type="password", placeholder="••••••••")
 
-        if st.button("Entrar", type="primary", use_container_width=True):
-            pw_hash = hashlib.sha256(password.encode()).hexdigest()
-            if username in APP_USERS and APP_USERS[username] == pw_hash:
-                st.session_state["logged_in"] = True
-                st.session_state["username"] = username
-                st.rerun()
-            else:
-                st.error("Usuário ou senha incorretos.")
+    if st.button("Entrar", type="primary", use_container_width=True):
+        pw_hash = hashlib.sha256(password.encode()).hexdigest()
+        if username in APP_USERS and APP_USERS[username] == pw_hash:
+            st.session_state["logged_in"] = True
+            st.session_state["username"] = username
+            st.rerun()
+        else:
+            st.error("Usuário ou senha incorretos.")
     st.stop()
 
 # ── Header ────────────────────────────────────────────────────────────────────
