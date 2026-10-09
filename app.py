@@ -46,9 +46,25 @@ html, body,
 [data-testid="column"],
 [data-testid="stHorizontalBlock"],
 section[data-testid="stSidebar"],
-.main, .block-container {
+.main, .block-container,
+.stApp > div, .stApp > div > div,
+[class*="css"] {
     background-color: #000000 !important;
     font-family: 'Inter', sans-serif !important;
+}
+
+/* ── Remover TODAS as bordas estruturais ── */
+[data-testid="stHorizontalBlock"],
+[data-testid="stHorizontalBlock"] > div,
+[data-testid="stVerticalBlock"],
+[data-testid="stMainBlockContainer"],
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"],
+.block-container, .main,
+.stApp > div {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 /* ── Esconder elementos do Streamlit ── */
